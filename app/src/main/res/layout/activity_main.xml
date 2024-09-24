@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.MainActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerviewSound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/linearPlayBtmController"
+        android:layout_marginBottom="12dp"/>
+
+    <LinearLayout
+        android:id="@+id/linearPlayBtmController"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnOnlyPlayingSound"
+        android:orientation="horizontal"
+        android:background="@color/green"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/txtSoundName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:text="Play All Sound" />
+
+        <ImageView
+            android:id="@+id/imvPlayAllIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/play_icon"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnOnlyPlayingSound"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
+</RelativeLayout>
