@@ -56,9 +56,6 @@ dependencies {
 
     // Notification
     implementation(libs.androidx.media)
-
-//    implementation ("com.arthenica:mobile-ffmpeg-full:4.4")
-
 }
 
 // Allow references to generated code

@@ -37,9 +37,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.MergeAudioActivity"
-            android:exported="false" />
-        <activity
             android:name=".activity.BaseActivity"
             android:exported="false" />
         <activity
