@@ -2,19 +2,15 @@ package com.example.voicemixed.util
 
 import android.app.Activity
 import android.app.Application
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.os.Bundle
-import dagger.hilt.android.HiltAndroidApp
 
-@HiltAndroidApp
-class ApplicationClass: Application() {
+class ApplicationClass : Application() {
 
     private var isInForeground = true
 
     override fun onCreate() {
         super.onCreate()
-        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks{
+        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
 
             }

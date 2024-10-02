@@ -1,10 +1,12 @@
 package com.example.voicemixed.audiorecording
 
 
+import android.app.ActivityManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
@@ -22,8 +24,7 @@ class AudioCaptureService : Service() {
     private lateinit var mMediaProjection: MediaProjection
     private var mResultCode: Int = 0
 
-    //    private lateinit var mResultData: Intent
-    private var mResultData: YourParcelable? = null
+    private lateinit var mResultData: Intent
 
     private val binder = LocalBinder() // Instance of LocalBinder
 
@@ -41,23 +42,18 @@ class AudioCaptureService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         try {
             intent?.let {
-                mResultCode = it.getIntExtra("RESULT_CODE", 4) // Get any necessary data from intent
-                mResultData = it.getParcelableExtra<YourParcelable>("RESULT_DATA")
-                if (mResultData != null) {
-                    initMediaProjection(mResultCode, mResultData)
-                } else {
-                    Log.d("AudioCaptureService", "RESULT_DATA is null!")
-                }
+                mResultCode = it.getIntExtra("RESULT_CODE", 0) // Get any necessary data from intent
+                mResultData = it.getParcelableExtra("RESULT_DATA")!!
+                initMediaProjection(mResultCode, mResultData)
             }
         } catch (e: Exception) {
             Log.d("Hello==>>", "Excep: ${e.message}")
         }
-
         return START_STICKY
     }
 
 
-    private fun initMediaProjection(resultCode: Int, resultData: YourParcelable?) {
+    private fun initMediaProjection(resultCode: Int, resultData: Intent?) {
         try {
             mResultCode = resultCode
             mResultData = resultData!!
@@ -66,7 +62,7 @@ class AudioCaptureService : Service() {
             mMediaProjection =
                 (getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager).getMediaProjection(
                     mResultCode,
-                    mResultData!!.someProperty
+                    mResultData
                 )
 
             // Register the callback
@@ -129,5 +125,15 @@ class AudioCaptureService : Service() {
         super.onDestroy()
         mMediaProjection.stop()
         stopForeground(true)
+    }
+
+    private fun isServiceRunning(serviceClass: Class<*>): Boolean {
+        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in activityManager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 }

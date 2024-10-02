@@ -25,6 +25,9 @@
         android:theme="@style/Theme.VoiceMixed"
         tools:targetApi="31">
         <activity
+            android:name=".activity.AudioRecordingBaseActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.RecordingSaveActivity"
             android:exported="true">
             <intent-filter>
@@ -32,7 +35,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".activity.MergeAudioActivity"
@@ -46,11 +48,13 @@
         <activity
             android:name=".activity.MainActivity"
             android:exported="false">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
 
         </activity>
 
@@ -59,7 +63,6 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
-
         <service
             android:name=".audiorecording.AudioCaptureService"
             android:enabled="true"
