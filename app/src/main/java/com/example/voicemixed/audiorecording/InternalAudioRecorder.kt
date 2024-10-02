@@ -21,8 +21,8 @@ import java.nio.ByteOrder
 
 @RequiresApi(Build.VERSION_CODES.Q)
 class InternalAudioRecorder(
-    private val context: Context,
-    private val mediaProjection: MediaProjection
+    context: Context,
+    mediaProjection: MediaProjection
 ) {
     private val samplingRateInHz = 44100
     private var audioRecord: AudioRecord? = null
@@ -32,6 +32,7 @@ class InternalAudioRecorder(
     private var outputFilePath: File? = null
 
     init {
+
         val audioFormat = AudioFormat.Builder()
             .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
             .setSampleRate(samplingRateInHz)
@@ -75,6 +76,7 @@ class InternalAudioRecorder(
         recordingThread = Thread(RecordingRunnable(), "Recording Thread")
         recordingThread?.start()
     }
+
 
     private inner class RecordingRunnable : Runnable {
         override fun run() {

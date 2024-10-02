@@ -1,12 +1,10 @@
 package com.example.voicemixed.audiorecording
 
 
-import android.app.ActivityManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
@@ -23,7 +21,6 @@ class AudioCaptureService : Service() {
 
     private lateinit var mMediaProjection: MediaProjection
     private var mResultCode: Int = 0
-
     private lateinit var mResultData: Intent
 
     private val binder = LocalBinder() // Instance of LocalBinder
@@ -124,16 +121,6 @@ class AudioCaptureService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         mMediaProjection.stop()
-        stopForeground(true)
-    }
-
-    private fun isServiceRunning(serviceClass: Class<*>): Boolean {
-        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (service in activityManager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.className) {
-                return true
-            }
-        }
-        return false
+        stopForeground(STOP_FOREGROUND_DETACH)
     }
 }

@@ -206,7 +206,7 @@ class MusicPlayerService : Service() {
         super.onDestroy()
         soundPlayer.stopAll()
         PlaybackStateUtil.sendPlaybackStateBroadcast(this, PlayState.PLAY)
-        stopForeground(true)
+        stopForeground(STOP_FOREGROUND_DETACH)
         stopSelf()
     }
 }

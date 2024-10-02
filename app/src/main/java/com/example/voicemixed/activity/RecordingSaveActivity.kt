@@ -38,6 +38,10 @@ class RecordingSaveActivity : AudioRecordingBaseActivity() {
             stopAudio02()
         }
 
+        binding.NavigateNext.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+
     }
 
     private fun onRecordButtonClick() {

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.PlaySongsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/playSongs1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play Songs1" />
+
+        <Button
+            android:id="@+id/stopSong1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Songs1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/playSongs2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play Songs2" />
+
+        <Button
+            android:id="@+id/stopSong2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Songs2" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/playSongs3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play Songs3" />
+
+        <Button
+            android:id="@+id/stopSong3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Songs3" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/playSongs4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play Songs4" />
+
+        <Button
+            android:id="@+id/stopSong4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Songs4" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/playSongs5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play Songs5" />
+
+        <Button
+            android:id="@+id/stopSong5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Songs5" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

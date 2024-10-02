@@ -17,7 +17,7 @@ import com.example.voicemixed.audiorecording.AudioCaptureService
 
 abstract class AudioRecordingBaseActivity : AppCompatActivity() {
 
-    protected lateinit var mediaProjectionManager: MediaProjectionManager
+    private lateinit var mediaProjectionManager: MediaProjectionManager
     protected lateinit var audioCaptureService: AudioCaptureService
     protected var serviceBound = false
     protected var isRecording = false
@@ -33,7 +33,7 @@ abstract class AudioRecordingBaseActivity : AppCompatActivity() {
 
 
     // Service connection handling
-    protected val serviceConnection = object : ServiceConnection {
+    private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             audioCaptureService = (service as AudioCaptureService.LocalBinder).getService()
             serviceBound = true
@@ -87,7 +87,6 @@ abstract class AudioRecordingBaseActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SCREEN_CAPTURE && resultCode == RESULT_OK && data != null) {
-//            val resultData = YourParcelable(data)
             startAndBindService(resultCode, data)
         } else {
             Toast.makeText(this, "Screen capture denied.", Toast.LENGTH_SHORT).show()
