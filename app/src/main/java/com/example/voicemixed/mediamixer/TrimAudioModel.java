@@ -2,12 +2,12 @@ package com.example.voicemixed.mediamixer;
 
 public class TrimAudioModel {
     private String filePath;
-    private int startOffset; // inSecond
-    private int endOffset; // inSecond
-    private float volume;
-    private int delayOffsets; // inMillisecond
+    private final int startOffset; // inSecond
+    private final float endOffset; // inSecond
+    private final float volume;
+    private final float delayOffsets; // inMillisecond
 
-    public TrimAudioModel(String filePath, int startOffset, int endOffset, float volume, int delayOffsets) {
+    public TrimAudioModel(String filePath, int startOffset, float endOffset, float volume, float delayOffsets) {
         this.filePath = filePath;
         this.startOffset = startOffset;
         this.endOffset = endOffset;
@@ -24,7 +24,7 @@ public class TrimAudioModel {
         return startOffset;
     }
 
-    public int getEndOffset() {
+    public float getEndOffset() {
         return endOffset;
     }
 
@@ -32,7 +32,7 @@ public class TrimAudioModel {
         return volume;
     }
 
-    public int getDelayOffsets() {
+    public float getDelayOffsets() {
         return delayOffsets;
     }
 }

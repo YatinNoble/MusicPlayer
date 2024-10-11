@@ -10,9 +10,16 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.voicemixed.R
 import com.example.voicemixed.notification.NotificationReceiver
+import com.example.voicemixed.notification.NotificationWorker
+import com.example.voicemixed.util.UserManager
+import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 class MusicPlayerService : Service() {
 
@@ -21,6 +28,8 @@ class MusicPlayerService : Service() {
     private lateinit var soundPlayer: SoundPlayer
     private val notificationChannelId = "music_player_channel"
     private val onGoingNotification = 1
+    private var currentWorkRequestId: UUID? = null
+
 
     inner class MusicBinder : Binder() {
         fun getService(): MusicPlayerService = this@MusicPlayerService
@@ -42,9 +51,10 @@ class MusicPlayerService : Service() {
             when (it.action) {
                 PlayState.PLAY.toString() -> playAllSounds()
                 PlayState.PAUSE.toString() -> pauseAllSounds()
+                PlayState.SET_TIMER.toString() -> scheduleNotification()
             }
         }
-        return START_NOT_STICKY
+        return START_STICKY
     }
 
 
@@ -130,7 +140,7 @@ class MusicPlayerService : Service() {
                 PlaybackStateUtil.sendPlaybackStateBroadcast(this, PlayState.PAUSE)
             }
         } else {
-            stopForeground(true)
+            stopForeground(STOP_FOREGROUND_DETACH)
             PlaybackStateUtil.sendPlaybackStateBroadcast(this, PlayState.PLAY)
         }
     }
@@ -144,11 +154,6 @@ class MusicPlayerService : Service() {
     // get currentPlayingSound list
     fun getCurrentPlaying(): ArrayList<PlayingSound> {
         return soundPlayer.currentPlayingSound()
-    }
-
-    // any single songs play or not
-    private fun oneSongObjectData(): Sound? {
-        return soundPlayer.oneSongPlay()
     }
 
 
@@ -172,7 +177,8 @@ class MusicPlayerService : Service() {
     private fun createNotification(
         songsPlay: String,
         playPauseText: String,
-        playPauseBtn: Int
+        playPauseBtn: Int,
+        isOngoing: Boolean = true // Default to true
     ): Notification {
         val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -184,6 +190,8 @@ class MusicPlayerService : Service() {
             Intent(baseContext, NotificationReceiver::class.java).setAction(playPauseText)
         val playPendingIntent = PendingIntent.getBroadcast(baseContext, 0, playIntent, flag)
 
+        val deleteIntent = createDeleteIntent() // Create the delete intent
+
 
         val notification = NotificationCompat.Builder(this, notificationChannelId)
             .setSmallIcon(R.drawable.exit_icon)
@@ -193,12 +201,13 @@ class MusicPlayerService : Service() {
             )
             .setContentTitle(songsPlay)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setPriority(Notification.PRIORITY_HIGH)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
             .setOnlyAlertOnce(true) // Ensure alert only on the first display
             .addAction(playPauseBtn, playPauseText, playPendingIntent)
+            .setDeleteIntent(deleteIntent) // Set the delete intent here
+            .setOngoing(isOngoing)
             .build()
-
         return notification
     }
 
@@ -207,6 +216,70 @@ class MusicPlayerService : Service() {
         soundPlayer.stopAll()
         PlaybackStateUtil.sendPlaybackStateBroadcast(this, PlayState.PLAY)
         stopForeground(STOP_FOREGROUND_DETACH)
+        // cancel work manager
+        currentWorkRequestId?.let {
+            WorkManager.getInstance(this).cancelWorkById(it)
+        }
         stopSelf()
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+    }
+
+
+    private fun createDeleteIntent(): PendingIntent {
+        val deleteIntent = Intent(baseContext, NotificationReceiver::class.java).apply {
+            action = PlayState.ACTION_NOTIFICATION_REMOVED.toString()
+        }
+        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+        return PendingIntent.getBroadcast(baseContext, 0, deleteIntent, flag)
+    }
+
+    /*private fun setTimerForTwoHours() {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, NotificationReceiver::class.java).apply {
+            action = PlayState.SET_TIMER.toString()
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val triggerTime = System.currentTimeMillis() + TWO_HOURS_MILLIS
+        Log.d("Hello==>>", "triggerTime: $triggerTime")
+
+        // Set the alarm to trigger in 2 hours from now
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            triggerTime,
+            pendingIntent
+        )
+    }*/
+
+
+    private fun scheduleNotification() {
+        // Check if there's an existing work request and cancel it
+        currentWorkRequestId?.let {
+            WorkManager.getInstance(this).cancelWorkById(it)
+        }
+
+        val duration = UserManager.getTimerDuration()
+        Toast.makeText(this, "$duration", Toast.LENGTH_SHORT).show()
+        val workRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
+            .setInitialDelay(duration, TimeUnit.MINUTES)
+            .build()
+
+        // Save the work request ID for future reference
+        currentWorkRequestId = workRequest.id
+
+        // Schedule the new work request
+        WorkManager.getInstance(this).enqueue(workRequest)
     }
 }

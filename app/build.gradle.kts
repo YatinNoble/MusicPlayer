@@ -20,8 +20,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            isMinifyEnabled = true
+            isShrinkResources = true
+        }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -35,6 +40,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
     buildFeatures {
         viewBinding = true
         dataBinding = true
@@ -56,6 +62,11 @@ dependencies {
 
     // Notification
     implementation(libs.androidx.media)
+
+//    implementation("com.arthenica:mobile-ffmpeg-audio:4.4")
+    implementation ("androidx.work:work-runtime-ktx:2.9.1")
+
+
 }
 
 // Allow references to generated code

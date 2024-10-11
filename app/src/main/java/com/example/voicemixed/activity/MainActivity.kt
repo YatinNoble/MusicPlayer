@@ -7,12 +7,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.voicemixed.R
 import com.example.voicemixed.adapter.SoundAdapter
 import com.example.voicemixed.audiorecording.AudioCaptureService
 import com.example.voicemixed.databinding.ActivityMainBinding
+import com.example.voicemixed.soundhelper.MusicPlayerService
 import com.example.voicemixed.soundhelper.PlayState
 import com.example.voicemixed.soundhelper.Sound
 import com.example.voicemixed.util.UserManager
@@ -23,6 +25,7 @@ class MainActivity : BaseActivity() {
     private lateinit var soundAdapter: SoundAdapter
     private var soundList = ArrayList<Sound>()
     private var buttonState = ""
+
 
     companion object {
         var playAnySongs = false
@@ -54,9 +57,16 @@ class MainActivity : BaseActivity() {
             startActivity(Intent(this@MainActivity, PlayingSoundsActivity::class.java))
         }
 
-
-        binding.txtSoundName.setOnClickListener {
-
+        binding.txtTimerDuration.setOnClickListener {
+            val duration = binding.txtDuration.text.toString()
+            if (duration.isNotEmpty()) {
+                UserManager.setTimerDuration(duration.toLong())
+                val serviceIntent = Intent(this, MusicPlayerService::class.java)
+                serviceIntent.action = PlayState.SET_TIMER.toString()
+                startService(serviceIntent)
+            } else {
+                Toast.makeText(this, "Please Enter Value", Toast.LENGTH_SHORT).show()
+            }
         }
 
         val isRun = isServiceRunning(AudioCaptureService::class.java)
@@ -124,7 +134,6 @@ class MainActivity : BaseActivity() {
         }
     }
 
-
     private fun isServiceRunning(serviceClass: Class<*>): Boolean {
         val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (service in activityManager.getRunningServices(Int.MAX_VALUE)) {
@@ -134,5 +143,4 @@ class MainActivity : BaseActivity() {
         }
         return false
     }
-
 }

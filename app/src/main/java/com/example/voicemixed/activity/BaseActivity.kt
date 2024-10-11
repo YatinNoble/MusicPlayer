@@ -46,7 +46,7 @@ abstract class BaseActivity : AppCompatActivity() {
         activityCount--
     }
 
-    override fun onDestroy() {
+    /*override fun onDestroy() {
         super.onDestroy()
         if (isBound) {
             unbindService(connection)
@@ -55,7 +55,7 @@ abstract class BaseActivity : AppCompatActivity() {
             }
             isBound = false
         }
-    }
+    }*/
 
     private fun isServiceRunning(serviceClass: Class<*>): Boolean {
         val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
